@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 class Song:
     def __init__(self, loudness, max_loudness, timb, temp, time, tit):
