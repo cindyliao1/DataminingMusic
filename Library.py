@@ -47,7 +47,7 @@ class Library:
         #
         # song_matrix = np.concatenate(loudness, max_l, timbre, tempo, time_signature)
         song_matrix = []
-        for song in songs:
+        for song in songs.values():
             song_a = []
             song_a[0] = song.loudness
             song_a[1] = song.max_loudness
@@ -97,8 +97,9 @@ class Library:
         return playlist
 
     def get_random_song(self):
+        print "LIB FILE TYPE: ", (self.lib_file)
         song_index = random.randint(0, len(self.lib_file))
-        loudness, danceability, energy, tempo, timesignature, title = self.lib_file[song_index]
+        loudness, danceability, energy, tempo, timesignature, title = self.lib_file.iloc[song_index]
         song = Song(loudness=loudness, dance=danceability, energy=energy,
                         temp=tempo, time=timesignature, tit=title)
         while song in self.library:
