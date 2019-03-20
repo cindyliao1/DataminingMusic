@@ -7,6 +7,7 @@ from scipy.spatial import distance
 from collections import defaultdict
 from data_reader import DataReader
 
+
 class Song:
     def __init__(self, loudness, dance, energy, temp, time, tit):
         self.loudness = loudness
@@ -89,7 +90,7 @@ class Library:
             rand = random.randint(1, size + 1)
             song = self.library[rand]
             # check if song is already in playlist. If it is, pick a new one.
-            while(song in playlist.values()):
+            while (song in playlist.values()):
                 rand = random.randint(1, size + 1)
                 song = self.library[rand]
 
@@ -102,7 +103,7 @@ class Library:
         song_index = random.randint(0, len(self.all_songs_csv))
         loudness, danceability, energy, tempo, timesignature, title = self.all_songs_csv.iloc[song_index]
         song = Song(loudness=loudness, dance=danceability, energy=energy,
-                        temp=tempo, time=timesignature, tit=title)
+                    temp=tempo, time=timesignature, tit=title)
         while song in self.library:
             song_index = random.randint(len(self.all_songs_csv))
             loudness, danceability, energy, tempo, timesignature, title = self.all_songs_csv[song_index]
@@ -111,22 +112,23 @@ class Library:
         return song
 
     def calculate_center(self, playlist_matrix, song_count):
-        values = np.zeros()
+        values = np.zeros(5)
         for category in playlist_matrix:
-            for j in len(playlist_matrix):
-                for i in len(category):
-                    values[j] += category[i]
+            # for j in range(len(playlist_matrix)):
+            for i in range(len(category)):
+                values[i] += category[i]
 
-        for i in len(values):
-            values[i] = values[i]/song_count
+        for i in range(len(values)):
+            values[i] = values[i] / song_count
 
         return values
 
     def suggest_song(self, playlist):
         playlist_center = self.calculate_center(playlist, len(playlist))
+        playlist_center = playlist_center.reshape(1, -1)
         index = self.kmeans.predict(playlist_center)  # get the cluster center index playlist belongs to
-        center = self.cluster_centers[index]  # get the point of cluster center
-        cluster_songs = self.clusters[center]  # get the indexes of songs in the cluster
+        # center = self.cluster_centers[index]  # get the point of cluster center
+        cluster_songs = self.clusters[index[0]]  # get the indexes of songs in the cluster
         closest_songs_dist, s_dict = self.find_closest_songs(playlist_center, cluster_songs)
         suggested_dist = closest_songs_dist[0]  # get closest distance
         suggested_song = s_dict[suggested_dist]  # get song from closest distance
@@ -145,11 +147,11 @@ class Library:
             song = self.library[index]
             song_a = [song.loudness, song.danceability, song.energy,
                       song.tempo, song.time_signature]
-            s_distance = distance.euclidean(playlist_center, song_a)
-            distances.append(s_distance)
+            sd = distance.euclidean(playlist_center, song_a)
+            distances.append(sd)
             songs.append(song)
 
-        for i in len(distances):
+        for i in range(len(distances)):
             s_distance[distances[i]] = songs[i]  # assigning distances to their songs
 
         np.sort(distances)  # sort distance in ascending order
