@@ -9,7 +9,7 @@ from collections import defaultdict
 class Song:
     def __init__(self, loudness, max_loudness, timb, temp, time, tit):
         self.loudness = loudness
-        self.max_loudness = max_loudness
+        self.dancability = max_loudness
         self.timbre = timb
         self.tempo = temp
         self.time_signature = time

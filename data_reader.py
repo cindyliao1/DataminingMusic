@@ -3,12 +3,13 @@ from pathlib import Path
 # class DataReader:
 import os
 import sys
-import hdf5_getters
+import hdf5_getters as hdf5
 import numpy as np
 
 
 class DataReader:
-
+    def __init__(self):
+        hi = ""
 
     def die_with_usage(self):
         """ HELP MENU """
@@ -31,75 +32,30 @@ class DataReader:
         print '                  Specifically desgin to display summary files'
         sys.exit(0)
 
-        # if __name__ == '__main__':
-        #     """ MAIN """
+    # if __name__ == '__main__':
+    #     """ MAIN """
 
-        # help menu
-        if len(sys.argv) < 2:
-            die_with_usage()
+    # help menu
+    # if len(sys.argv) < 2:
+    #     die_with_usage()
+    # @staticmethod
+    def read(self, path):
+        files = os.listdir(path)
+        import csv
+        with open('library_csv.csv', 'w') as library_csv:
+            writer = csv.writer(library_csv)
+            writer.writerow(['Loudness', 'Danceability', 'Timbre', 'Tempo', 'timeSignature', 'Title'])
+            # get params
+            for filename in files:
+                # hdf5path = filename
+                hdf5path = "Data/" + filename
+                # hdf5path.replace("'","",2)
+                # sanity check
+                if not os.path.isfile(hdf5path):
+                    print 'ERROR: file', hdf5path, 'does not exist.'
+                    sys.exit(0)
+                h5 = hdf5_getters.open_h5_file_read(hdf5path)
+                # get all getters
 
-        # flags
-        summary = False
-        while True:
-            if sys.argv[1] == '-summary':
-                summary = True
-            else:
-                break
-            sys.argv.pop(1)
-
-        # get params
-        hdf5path = sys.argv[1]
-        # hdf5path =
-        songidx = 0
-        if len(sys.argv) > 2:
-            songidx = int(sys.argv[2])
-        onegetter = ''
-        if len(sys.argv) > 3:
-            onegetter = sys.argv[3]
-
-        # sanity check
-        if not os.path.isfile(hdf5path):
-            print 'ERROR: file', hdf5path, 'does not exist.'
-            sys.exit(0)
-        h5 = hdf5_getters.open_h5_file_read(hdf5path)
-        numSongs = hdf5_getters.get_num_songs(h5)
-        if songidx >= numSongs:
-            print 'ERROR: file contains only', numSongs
-            h5.close()
-            sys.exit(0)
-
-        # get all getters
-        getters = filter(lambda x: x[:4] == 'get_', hdf5_getters.__dict__.keys())
-        getters.remove("get_num_songs")  # special case
-        if onegetter == 'num_songs' or onegetter == 'get_num_songs':
-            getters = []
-        elif onegetter != '':
-            if onegetter[:4] != 'get_':
-                onegetter = 'get_' + onegetter
-            try:
-                getters.index(onegetter)
-            except ValueError:
-                print 'ERROR: getter requested:', onegetter, 'does not exist.'
+                # print them
                 h5.close()
-                sys.exit(0)
-            getters = [onegetter]
-        getters = np.sort(getters)
-
-        # print them
-        for getter in getters:
-            try:
-                res = hdf5_getters.__getattribute__(getter)(h5, songidx)
-            except AttributeError, e:
-                if summary:
-                    continue
-                else:
-                    print e
-                    print 'forgot -summary flag? specified wrong getter?'
-            if res.__class__.__name__ == 'ndarray':
-                print getter[4:] + ": shape =", res.shape
-            else:
-                print getter[4:] + ":", res
-
-        # done
-        print 'DONE, showed song', songidx, '/', numSongs - 1, 'in file:', hdf5path
-        h5.close()
