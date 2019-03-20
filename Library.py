@@ -5,6 +5,7 @@ import stat
 from sklearn.cluster import KMeans
 from scipy.spatial import distance
 from collections import defaultdict
+from data_reader import DataReader
 
 class Song:
     def __init__(self, loudness, dance, energy, temp, time, tit):
@@ -18,15 +19,15 @@ class Song:
 
 class Library:
     def __init__(self, s, c, l_file):
-        self.lib_file = pd.read_csv(l_file)
+        self.all_songs_csv = pd.read_csv(l_file)
         self.size = s
         self.library = {}
         self.populate_library()
         self.num_cluster = c
+        self.kmeans = KMeans(init='k-means++', n_clusters=c)
         self.song_matrix = self.create_song_matrix(self.library)
         self.clusters = defaultdict(list)
-        self.cluster_centers = self.k_cluster(c)
-        self.kmeans = KMeans(init='k-means++', n_clusters=c)
+        self.cluster_centers = self.k_cluster()
 
     def create_song_matrix(self, songs):
         # song_matrix = np.array()
@@ -49,11 +50,11 @@ class Library:
         song_matrix = []
         for song in songs.values():
             song_a = []
-            song_a[0] = song.loudness
-            song_a[1] = song.max_loudness
-            song_a[2] = song.energy
-            song_a[3] = song.tempo
-            song_a[4] = song.time_signature
+            song_a.append(song.loudness)
+            song_a.append(song.danceability)
+            song_a.append(song.energy)
+            song_a.append(song.tempo)
+            song_a.append(song.time_signature)
             # song_a[5] = song.title
             song_matrix.append(song_a)
         return song_matrix
@@ -63,16 +64,16 @@ class Library:
 
     def k_cluster(self):
         # make copy of library
-        lib_copy = self.lib_file
+        lib_copy = self.song_matrix
         # transform song names into dummies
-        lib_copy = pd.get_dummies(lib_copy, column=['Title'])
+        # lib_copy = pd.get_dummies(lib_copy, column=['Title'])
         # standardize
-        columns = ['Loudness', 'Danceability', 'Energy', 'Tempo', 'timeSignature', 'Title']
-        lib_copy_std = stat.zscore(lib_copy[columns])
+        # columns = ['Loudness', 'Danceability', 'Energy', 'Tempo', 'timeSignature', 'Title']
+        # lib_copy_std = stat.zscore(lib_copy[columns])
 
-        center_belong = self.kmeans.fit_predict(lib_copy_std)
+        center_belong = self.kmeans.fit_predict(lib_copy)
         # populate dictionary: key = center index, value = song values
-        for i in len(center_belong):
+        for i in range(len(center_belong)):
             self.clusters[center_belong[i]].append(i)
         print self.kmeans.cluster_centers_
         return self.kmeans.cluster_centers_
@@ -97,14 +98,14 @@ class Library:
         return playlist
 
     def get_random_song(self):
-        print "LIB FILE TYPE: ", (self.lib_file)
-        song_index = random.randint(0, len(self.lib_file))
-        loudness, danceability, energy, tempo, timesignature, title = self.lib_file.iloc[song_index]
+        print "LIB FILE TYPE: ", (self.all_songs_csv)
+        song_index = random.randint(0, len(self.all_songs_csv))
+        loudness, danceability, energy, tempo, timesignature, title = self.all_songs_csv.iloc[song_index]
         song = Song(loudness=loudness, dance=danceability, energy=energy,
                         temp=tempo, time=timesignature, tit=title)
         while song in self.library:
-            song_index = random.randint(len(self.lib_file))
-            loudness, danceability, energy, tempo, timesignature, title = self.lib_file[song_index]
+            song_index = random.randint(len(self.all_songs_csv))
+            loudness, danceability, energy, tempo, timesignature, title = self.all_songs_csv[song_index]
             song = Song(loudness=loudness, dance=danceability, energy=energy,
                         temp=tempo, time=timesignature, tit=title)
         return song
@@ -155,10 +156,10 @@ class Library:
         return distances, s_distance
 
     def get_song_title(self, song):
-        title = self.lib_file[(self.lib_file['Loudness'] == song.loudness) &
-                              (self.lib_file['Danceability'] == song.danceability) &
-                              (self.lib_file['Energy'] == song.energy) &
-                              (self.lib_file['Tempo'] == song.tempo) &
-                              (self.lib_file['timeSignature'] == song.time_signature), ['Title']]
+        title = self.all_songs_csv[(self.all_songs_csv['Loudness'] == song.loudness) &
+                                   (self.all_songs_csv['Danceability'] == song.danceability) &
+                                   (self.all_songs_csv['Energy'] == song.energy) &
+                                   (self.all_songs_csv['Tempo'] == song.tempo) &
+                                   (self.all_songs_csv['timeSignature'] == song.time_signature), ['Title']]
 
         return title
