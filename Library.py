@@ -7,10 +7,10 @@ from scipy.spatial import distance
 from collections import defaultdict
 
 class Song:
-    def __init__(self, loudness, max_loudness, timb, temp, time, tit):
+    def __init__(self, loudness, dance, energy, temp, time, tit):
         self.loudness = loudness
-        self.dancability = max_loudness
-        self.timbre = timb
+        self.danceability = dance
+        self.energy = energy
         self.tempo = temp
         self.time_signature = time
         self.title = tit
@@ -51,7 +51,7 @@ class Library:
             song_a = []
             song_a[0] = song.loudness
             song_a[1] = song.max_loudness
-            song_a[2] = song.timbre
+            song_a[2] = song.energy
             song_a[3] = song.tempo
             song_a[4] = song.time_signature
             # song_a[5] = song.title
@@ -67,7 +67,7 @@ class Library:
         # transform song names into dummies
         lib_copy = pd.get_dummies(lib_copy, column=['Title'])
         # standardize
-        columns = ['Loudness', 'maxLoudness', 'Timbre', 'Tempo', 'timeSignature', 'Title']
+        columns = ['Loudness', 'Danceability', 'Energy', 'Tempo', 'timeSignature', 'Title']
         lib_copy_std = stat.zscore(lib_copy[columns])
 
         center_belong = self.kmeans.fit_predict(lib_copy_std)
@@ -97,15 +97,15 @@ class Library:
         return playlist
 
     def get_random_song(self):
-        song_index = random.randint(len(self.lib_file))
-        loudness, maxloudness, timbre, tempo, timesignature, title = self.lib_file[song_index]
-        song = Song(loudness=loudness, max_loudness=maxloudness, timb=timbre,
+        song_index = random.randint(0, len(self.lib_file))
+        loudness, danceability, energy, tempo, timesignature, title = self.lib_file[song_index]
+        song = Song(loudness=loudness, dance=danceability, energy=energy,
                         temp=tempo, time=timesignature, tit=title)
         while song in self.library:
             song_index = random.randint(len(self.lib_file))
-            loudness, maxloudness, timbre, tempo, timesignature, title = self.lib_file[song_index]
-            song = Song(loudness=loudness, max_loudness=maxloudness, timb=timbre,
-                            temp=tempo, time=timesignature, tit=title)
+            loudness, danceability, energy, tempo, timesignature, title = self.lib_file[song_index]
+            song = Song(loudness=loudness, dance=danceability, energy=energy,
+                        temp=tempo, time=timesignature, tit=title)
         return song
 
     def calculate_center(self, playlist_matrix, song_count):
@@ -141,7 +141,7 @@ class Library:
         s_distance = {}
         for index in cluster_songs:
             song = self.library[index]
-            song_a = [song.loudness, song.max_loudness, song.timbre,
+            song_a = [song.loudness, song.danceability, song.energy,
                       song.tempo, song.time_signature]
             s_distance = distance.euclidean(playlist_center, song_a)
             distances.append(s_distance)
@@ -155,8 +155,8 @@ class Library:
 
     def get_song_title(self, song):
         title = self.lib_file[(self.lib_file['Loudness'] == song.loudness) &
-                              (self.lib_file['maxLoudness'] == song.max_loudness) &
-                              (self.lib_file['Timbre'] == song.timbre) &
+                              (self.lib_file['Danceability'] == song.danceability) &
+                              (self.lib_file['Energy'] == song.energy) &
                               (self.lib_file['Tempo'] == song.tempo) &
                               (self.lib_file['timeSignature'] == song.time_signature), ['Title']]
 

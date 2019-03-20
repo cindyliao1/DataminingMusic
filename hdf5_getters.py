@@ -235,11 +235,11 @@ def get_duration(h5, songidx=0):
 #     return h5.root.analysis.songs.cols.end_of_fade_in[songidx]
 
 
-# def get_energy(h5, songidx=0):
-#     """
-#     Get energy from a HDF5 song file, by default the first song in it
-#     """
-#     return h5.root.analysis.songs.cols.energy[songidx]
+def get_energy(h5, songidx=0):
+    """
+    Get energy from a HDF5 song file, by default the first song in it
+    """
+    return h5.root.analysis.songs.cols.energy[songidx]
 
 
 # def get_key(h5, songidx=0):
@@ -348,16 +348,16 @@ def get_time_signature(h5, songidx=0):
 #                                              h5.root.analysis.songs.cols.idx_segments_pitches[songidx + 1], :]
 
 
-def get_segments_timbre(h5, songidx=0):
-    """
-    Get segments timbre array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:, :]
-    return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:
-                                            h5.root.analysis.songs.cols.idx_segments_timbre[songidx + 1], :]
+# def get_segments_timbre(h5, songidx=0):
+#     """
+#     Get segments timbre array. Takes care of the proper indexing if we are in aggregate
+#     file. By default, return the array for the first song in the h5 file.
+#     To get a regular numpy ndarray, cast the result to: numpy.array( )
+#     """
+#     if h5.root.analysis.songs.nrows == songidx + 1:
+#         return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:, :]
+#     return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:
+#                                             h5.root.analysis.songs.cols.idx_segments_timbre[songidx + 1], :]
 
 
 # def get_segments_loudness_max(h5, songidx=0):

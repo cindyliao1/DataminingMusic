@@ -8,10 +8,11 @@ def main():
     print "in main"
     dr = DataReader()
     dr.read(path="Data")
-    library = Library(10, 4)
+    library = Library(10, 4, "library_csv.csv")
     playlist = library.make_playlist(3)
-    playlist_matrix = library.create_song_matrix(playlist)
-    suggestion = library.suggest_song(playlist_matrix)
+    print playlist
+    # playlist_matrix = library.create_song_matrix(playlist)
+    # suggestion = library.suggest_song(playlist_matrix)
 
 if __name__ == "__main__":
 	main()
