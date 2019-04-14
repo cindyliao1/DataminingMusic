@@ -90,3 +90,4 @@ class DataReader:
                     # print them
                     h5.close()
             library_csv.close()
+        print ("done")
