@@ -73,20 +73,20 @@ class DataReader:
         import csv
         with open('library_csv.csv', 'w') as library_csv:
             writer = csv.writer(library_csv)
-            writer.writerow(['Loudness', 'Danceability', 'Energy', 'Tempo', 'timeSignature', 'Title'])
+            writer.writerow(['Loudness', 'Key', 'Mode', 'Tempo', 'timeSignature', 'Title'])
             for r, d, f in os.walk(path):
                 for song in f:
                     hdf5path = os.path.join(r, song)
                     h5 = hdf5_getters.open_h5_file_read(hdf5path)
                     # get all getters
                     loudness = hdf5.get_loudness(h5)
-                    dance = hdf5.get_danceability(h5)
-                    energy = hdf5.get_energy(h5)
+                    key = hdf5.get_key(h5)
+                    mode = hdf5.get_mode(h5)
                     tempo = hdf5.get_tempo(h5)
                     ts = hdf5.get_time_signature(h5)
                     title = hdf5.get_title(h5)
 
-                    writer.writerow([loudness, dance, energy, tempo, ts, title])
+                    writer.writerow([loudness, key, mode, tempo, ts, title])
                     # print them
                     h5.close()
             library_csv.close()

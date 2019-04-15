@@ -7,10 +7,12 @@ from data_reader import DataReader
 
 def main():
     print "in main"
-    dr = DataReader()
-    dr.root_retrieve(path="Data")
+    # dr = DataReader()
+    # dr.root_retrieve(path="Data")
     # dr.read(path="Data")
-    # library = Library(10, 4, "library_csv.csv")
+    library = Library(9000, 3, "library_csv.csv")
+    library.pca_plot(False)
+    library.find_num_cluster()
     # playlist = library.make_playlist(3)
     # # print playlist
     # playlist_matrix = library.create_song_matrix(playlist)

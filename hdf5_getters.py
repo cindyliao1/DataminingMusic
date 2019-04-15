@@ -152,16 +152,16 @@ def get_title(h5, songidx=0):
 #     return h5.root.metadata.songs.cols.track_7digitalid[songidx]
 
 
-# def get_similar_artists(h5, songidx=0):
-#     """
-#     Get similar artists array. Takes care of the proper indexing if we are in aggregate
-#     file. By default, return the array for the first song in the h5 file.
-#     To get a regular numpy ndarray, cast the result to: numpy.array( )
-#     """
-#     if h5.root.metadata.songs.nrows == songidx + 1:
-#         return h5.root.metadata.similar_artists[h5.root.metadata.songs.cols.idx_similar_artists[songidx]:]
-#     return h5.root.metadata.similar_artists[h5.root.metadata.songs.cols.idx_similar_artists[songidx]:
-#                                             h5.root.metadata.songs.cols.idx_similar_artists[songidx + 1]]
+def get_similar_artists(h5, songidx=0):
+    """
+    Get similar artists array. Takes care of the proper indexing if we are in aggregate
+    file. By default, return the array for the first song in the h5 file.
+    To get a regular numpy ndarray, cast the result to: numpy.array( )
+    """
+    if h5.root.metadata.songs.nrows == songidx + 1:
+        return h5.root.metadata.similar_artists[h5.root.metadata.songs.cols.idx_similar_artists[songidx]:]
+    return h5.root.metadata.similar_artists[h5.root.metadata.songs.cols.idx_similar_artists[songidx]:
+                                            h5.root.metadata.songs.cols.idx_similar_artists[songidx + 1]]
 
 
 # def get_artist_terms(h5, songidx=0):
@@ -214,11 +214,11 @@ def get_title(h5, songidx=0):
 #     return h5.root.analysis.songs.cols.audio_md5[songidx]
 
 
-def get_danceability(h5, songidx=0):
-    """
-    Get danceability from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.danceability[songidx]
+# def get_danceability(h5, songidx=0):
+#     """
+#     Get danceability from a HDF5 song file, by default the first song in it
+#     """
+#     return h5.root.analysis.songs.cols.danceability[songidx]
 
 
 def get_duration(h5, songidx=0):
@@ -235,18 +235,18 @@ def get_duration(h5, songidx=0):
 #     return h5.root.analysis.songs.cols.end_of_fade_in[songidx]
 
 
-def get_energy(h5, songidx=0):
-    """
-    Get energy from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.energy[songidx]
+# def get_energy(h5, songidx=0):
+#     """
+#     Get energy from a HDF5 song file, by default the first song in it
+#     """
+#     return h5.root.analysis.songs.cols.energy[songidx]
 
 
-# def get_key(h5, songidx=0):
-#     """
-#     Get key from a HDF5 song file, by default the first song in it
-#     """
-#     return h5.root.analysis.songs.cols.key[songidx]
+def get_key(h5, songidx=0):
+    """
+    Get key from a HDF5 song file, by default the first song in it
+    """
+    return h5.root.analysis.songs.cols.key[songidx]
 
 
 # def get_key_confidence(h5, songidx=0):
@@ -263,12 +263,12 @@ def get_loudness(h5, songidx=0):
     return h5.root.analysis.songs.cols.loudness[songidx]
 
 
-# def get_mode(h5, songidx=0):
-#     """
-#     Get mode from a HDF5 song file, by default the first song in it
-#     """
-#     return h5.root.analysis.songs.cols.mode[songidx]
-#
+def get_mode(h5, songidx=0):
+    """
+    Get mode from a HDF5 song file, by default the first song in it
+    """
+    return h5.root.analysis.songs.cols.mode[songidx]
+
 #
 # def get_mode_confidence(h5, songidx=0):
 #     """
